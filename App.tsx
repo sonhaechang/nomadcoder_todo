@@ -10,7 +10,8 @@ import {
 	View,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Icon from 'react-native-vector-icons/Fontisto';
+import FontistoIcon from 'react-native-vector-icons/Fontisto';
+import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import { STORAGE_KEY } from '@env';
 import { theme } from './colors';
 
@@ -39,7 +40,7 @@ function App(): JSX.Element {
 			if (text !== '') {
 				const newToDos = {
 					...toDos, 
-					[Date.now()]: { text, working }
+					[Date.now()]: { text, working, finished: false }
 				}
 		
 				setToDos(newToDos);
@@ -59,11 +60,22 @@ function App(): JSX.Element {
 		}
 	};
 
+	const finishTodo = async (id: string) => {
+		try {
+			const newToDos = { ...toDos };
+			newToDos[id].finished = !newToDos[id].finished;						
+			setToDos(newToDos);
+			await saveToDos(newToDos);
+		} catch(error) {
+			console.log(error);
+		}
+	};
+
 	const deleteTodo = (id: string) => {
-		Alert.alert("Delete To Do", "Are you sure?", [
-			{ text: "Cancel" },
+		Alert.alert('Delete To Do', 'Are you sure?', [
+			{ text: 'Cancel' },
 			{
-				text: "Ok",
+				text: 'Ok',
 				// style: "destructive",
 				onPress: async () => {
 					try {
@@ -128,16 +140,42 @@ function App(): JSX.Element {
 							key={key}
 							style={styles.toDo}
 						>
-							<Text style={styles.toDoText}>
-								{toDos[key].text}
-							</Text>
-							<TouchableOpacity onPress={() => deleteTodo(key)}>
-								<Icon 
-									name='trash'
-									size={15} 
-									color={theme.grey} 
-								/>
-							</TouchableOpacity>
+							<View style={styles.toDoCheckBoxBlock}>
+								<TouchableOpacity onPress={() => finishTodo(key)}>
+									<IoniconsIcon 
+										name={
+											toDos[key].finished === true ?
+											'checkbox' :
+											'checkbox-outline'
+										}
+										size={15} 
+										color='white' 
+									/>
+								</TouchableOpacity>
+							</View>
+
+							<View style={styles.toDoTextBlock}>
+								<Text 
+									style={{
+										...styles.toDoText,
+										textDecorationLine: toDos[key].finished 
+										? 'line-through' : 'none',
+										
+									}}
+								>
+									{toDos[key].text}
+								</Text>
+							</View>
+
+							<View style={styles.toDoBtnGroup}>
+								<TouchableOpacity onPress={() => deleteTodo(key)}>
+									<FontistoIcon 
+										name='trash'
+										size={15} 
+										color='white'
+									/>
+								</TouchableOpacity>
+							</View>
 						</View> 
 					) : null
 				)}
@@ -184,10 +222,23 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 	},
 
+	toDoCheckBoxBlock: {
+		flex: 1
+	},
+
+	toDoTextBlock: {
+		flex: 10
+	},
+
 	toDoText: {
 		color: 'white',
 		fontSize: 15,
 		fontWeight: '500',
+	},
+
+	toDoBtnGroup: {
+		flex: 1, 
+		alignItems: 'flex-end'
 	}
 });
 
