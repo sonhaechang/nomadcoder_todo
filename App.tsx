@@ -1,185 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import {
-	Alert,
-	ScrollView,
-	StatusBar,
-	StyleSheet,
-	Text,
-	TextInput,
-	TouchableOpacity,
-	View,
-} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import FontistoIcon from 'react-native-vector-icons/Fontisto';
-import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import { STORAGE_KEY } from '@env';
+import { StatusBar, StyleSheet, View } from 'react-native';
+import Header from './components/Header';
+import CreateToDo from './components/todo/CreateToDo';
+import ToDos from './components/todo/ToDos';
+import { loadToDos } from './utils/storage';
 import { theme } from './colors';
 
 StatusBar.setBarStyle('light-content');
 
 function App(): JSX.Element {
 	const [working, setWorking] = useState<boolean>(true);
-	const [text, setText] = useState<string>('');
 	const [toDos, setToDos] = useState<{} | any>({});
-
-	const traval = () => setWorking(false);
-	const work = () => setWorking(true);
-	const onChangeText = (e: any) => setText(e);
-
-	const loadToDos = async () => {
-		try {
-			const s: {} | any = await AsyncStorage.getItem(STORAGE_KEY);
-			s && setToDos(JSON.parse(s));
-		} catch(error) {
-			console.log(error);
-		}
-	};
-
-	const addToDo = async () => {
-		try {
-			if (text !== '') {
-				const newToDos = {
-					...toDos, 
-					[Date.now()]: { text, working, finished: false }
-				}
-		
-				setToDos(newToDos);
-				await saveToDos(newToDos);
-				setText('');		
-			}
-		} catch(error) {
-			console.log(error);
-		}
-	};
-
-	const saveToDos = async (toSave: any) => {
-		try {
-			await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
-		} catch(error) {
-			console.log(error);
-		}
-	};
-
-	const finishTodo = async (id: string) => {
-		try {
-			const newToDos = { ...toDos };
-			newToDos[id].finished = !newToDos[id].finished;						
-			setToDos(newToDos);
-			await saveToDos(newToDos);
-		} catch(error) {
-			console.log(error);
-		}
-	};
-
-	const deleteTodo = (id: string) => {
-		Alert.alert('Delete To Do', 'Are you sure?', [
-			{ text: 'Cancel' },
-			{
-				text: 'Ok',
-				// style: "destructive",
-				onPress: async () => {
-					try {
-						const newToDos = { ...toDos };
-						delete newToDos[id];
-						setToDos(newToDos);
-						await saveToDos(newToDos);
-					} catch(error) {
-						console.log(error);
-					}
-				},
-			},
-		]);
-	};
-
+	
 	useEffect(() => {
-		loadToDos();
+		loadToDos(setToDos);
 	}, []);
 
 	return (
 		<View style={styles.container}>
 			<StatusBar  />
-			<View style={styles.header}>
-				<TouchableOpacity onPress={work}>
-					<Text 
-						style={{ 
-							...styles.btnText, 
-							color: working ? 'white' : theme.grey 
-						}}
-					>
-						Work
-					</Text>
-				</TouchableOpacity>
 
-				<TouchableOpacity onPress={traval}>
-					<Text 
-						style={{ 
-							...styles.btnText,
-							color: !working ? 'white' : theme.grey 
-						}}
-					>
-						Travel
-					</Text>
-				</TouchableOpacity>
-			</View>
-
-			<TextInput 
-				onChangeText={onChangeText}
-				onSubmitEditing={addToDo}
-				returnKeyType='done'
-				clearButtonMode='always'
-				placeholder={working ? 'Add a To Do' : 'where do you want to go?'}
-				value={text}
-				style={styles.input} 
+			<Header 
+				working={working} 
+				setWorking={setWorking} 
+			/>
+			
+			<CreateToDo 
+				working={working} 
+				toDos={toDos} 
+				setToDos={setToDos} 
 			/>
 
-			<ScrollView>
-				{Object.keys(toDos).sort().reverse().map(key => 
-					toDos[key].working === working ?
-					(
-						<View 
-							key={key}
-							style={styles.toDo}
-						>
-							<View style={styles.toDoCheckBoxBlock}>
-								<TouchableOpacity onPress={() => finishTodo(key)}>
-									<IoniconsIcon 
-										name={
-											toDos[key].finished === true ?
-											'checkbox' :
-											'checkbox-outline'
-										}
-										size={15} 
-										color='white' 
-									/>
-								</TouchableOpacity>
-							</View>
-
-							<View style={styles.toDoTextBlock}>
-								<Text 
-									style={{
-										...styles.toDoText,
-										textDecorationLine: toDos[key].finished 
-										? 'line-through' : 'none',
-										
-									}}
-								>
-									{toDos[key].text}
-								</Text>
-							</View>
-
-							<View style={styles.toDoBtnGroup}>
-								<TouchableOpacity onPress={() => deleteTodo(key)}>
-									<FontistoIcon 
-										name='trash'
-										size={15} 
-										color='white'
-									/>
-								</TouchableOpacity>
-							</View>
-						</View> 
-					) : null
-				)}
-			</ScrollView>
+			<ToDos 
+				toDos={toDos} 
+				setToDos={setToDos} 
+				working={working} 
+			/>
 		</View>
 	);
 }
@@ -190,56 +46,6 @@ const styles = StyleSheet.create({
 		backgroundColor: theme.bg,
 		paddingHorizontal: 20,
 	},
-
-	header: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		marginTop: 100,
-	},
-
-	btnText: {
-		fontSize: 38,
-		fontWeight: '600',
-	}, 
-
-	input: {
-		backgroundColor: 'white',
-		paddingVertical: 15,
-		paddingHorizontal: 20,
-		borderRadius: 10,
-		marginVertical: 20,
-		fontSize: 15,
-	},
-
-	toDo: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-between',
-		backgroundColor: theme.toDoBg,
-		marginBottom: 20,
-		paddingVertical: 15,
-		paddingHorizontal: 20,
-		borderRadius: 10,
-	},
-
-	toDoCheckBoxBlock: {
-		flex: 1
-	},
-
-	toDoTextBlock: {
-		flex: 10
-	},
-
-	toDoText: {
-		color: 'white',
-		fontSize: 15,
-		fontWeight: '500',
-	},
-
-	toDoBtnGroup: {
-		flex: 1, 
-		alignItems: 'flex-end'
-	}
 });
 
 export default App;
