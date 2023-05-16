@@ -59,6 +59,26 @@ function App(): JSX.Element {
 		}
 	};
 
+	const deleteTodo = (id: string) => {
+		Alert.alert("Delete To Do", "Are you sure?", [
+			{ text: "Cancel" },
+			{
+				text: "Ok",
+				// style: "destructive",
+				onPress: async () => {
+					try {
+						const newToDos = { ...toDos };
+						delete newToDos[id];
+						setToDos(newToDos);
+						await saveToDos(newToDos);
+					} catch(error) {
+						console.log(error);
+					}
+				},
+			},
+		]);
+	};
+
 	useEffect(() => {
 		loadToDos();
 	}, []);
@@ -111,6 +131,9 @@ function App(): JSX.Element {
 							<Text style={styles.toDoText}>
 								{toDos[key].text}
 							</Text>
+							<TouchableOpacity onPress={() => deleteTodo(key)}>
+								<Text>❌</Text>
+							</TouchableOpacity>
 						</View> 
 					) : null
 				)}
