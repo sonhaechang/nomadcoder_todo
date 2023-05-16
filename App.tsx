@@ -10,6 +10,7 @@ import {
 	View,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/Fontisto';
 import { STORAGE_KEY } from '@env';
 import { theme } from './colors';
 
@@ -131,7 +132,11 @@ function App(): JSX.Element {
 								{toDos[key].text}
 							</Text>
 							<TouchableOpacity onPress={() => deleteTodo(key)}>
-								<Text>❌</Text>
+								<Icon 
+									name='trash'
+									size={15} 
+									color={theme.grey} 
+								/>
 							</TouchableOpacity>
 						</View> 
 					) : null
