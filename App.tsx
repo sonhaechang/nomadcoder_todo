@@ -133,7 +133,7 @@ function App(): JSX.Element {
 			/>
 
 			<ScrollView>
-				{Object.keys(toDos).map(key => 
+				{Object.keys(toDos).sort().reverse().map(key => 
 					toDos[key].working === working ?
 					(
 						<View 
