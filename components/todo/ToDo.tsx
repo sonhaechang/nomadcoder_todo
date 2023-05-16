@@ -1,8 +1,9 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import DeleteToDo from './DeleteToDo';
 import FinishToDo from './FinishToDo';
 import UpdateToDo from './UpdateToDo';
+import ToDoContent from './ToDoContent';
 import { theme } from '../../colors';
 
 type ToDoProps = {
@@ -12,30 +13,45 @@ type ToDoProps = {
 };
 
 function ToDo({ id, toDos, setToDos }: ToDoProps): JSX.Element {
+	const [isUpdate, setIsUpdate] = useState<boolean>(false);
+    const [text, setText] = useState<string>(toDos[id].text);
+
     return (
         <View 
             id={id}
             style={styles.toDo}
         >
             <View style={styles.toDoCheckBoxBlock}>
-				<FinishToDo id={id} toDos={toDos} setToDos={setToDos} />
+				<FinishToDo 
+					id={id} 
+					toDos={toDos} 
+					setToDos={setToDos} 
+				/>
             </View>
 
-            <View style={styles.toDoTextBlock}>
-                <Text 
-                    style={{
-                        ...styles.toDoText,
-                        textDecorationLine: toDos[id].finished 
-                        ? 'line-through' : 'none',
-                    }}
-                >
-                    {toDos[id].text}
-                </Text>
-            </View>
+			<ToDoContent 
+				id={id} 
+				toDos={toDos} 
+				setToDos={setToDos} 
+				isUpdate={isUpdate} 
+				setIsUpdate={setIsUpdate}
+				text={text}
+    			setText={setText}
+			/>
 
             <View style={styles.toDoBtnGroup}>
-				<UpdateToDo id={id} toDos={toDos} setToDos={setToDos} />
-				<DeleteToDo id={id} toDos={toDos} setToDos={setToDos} />
+				<UpdateToDo 
+					isUpdate={isUpdate}
+					setIsUpdate={setIsUpdate}
+					setText={setText} 
+					text={toDos[id].text}
+				/>
+				
+				<DeleteToDo 
+					id={id} 
+					toDos={toDos} 
+					setToDos={setToDos} 
+				/>
             </View>
         </View> 
     );
@@ -55,16 +71,6 @@ const styles = StyleSheet.create({
 
 	toDoCheckBoxBlock: {
 		flex: 1
-	},
-
-	toDoTextBlock: {
-		flex: 10
-	},
-
-	toDoText: {
-		color: 'white',
-		fontSize: 15,
-		fontWeight: '500',
 	},
 
 	toDoBtnGroup: {
