@@ -10,11 +10,10 @@ import {
 	View,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { STORAGE_KEY } from '@env';
 import { theme } from './colors';
 
 StatusBar.setBarStyle('light-content');
-
-const STORAGE_KEY = "@toDos";
 
 function App(): JSX.Element {
 	const [working, setWorking] = useState<boolean>(true);
