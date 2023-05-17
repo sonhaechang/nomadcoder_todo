@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert, TouchableOpacity } from 'react-native';
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
-import { saveToDos } from '../../utils/storage';
+import { saveStorage } from '../../utils/storage';
 
 type DeleteToDoProps = {
     id: string;
@@ -21,7 +21,7 @@ function DeleteToDo({ id, toDos, setToDos }: DeleteToDoProps): JSX.Element {
 						const newToDos = { ...toDos };
 						delete newToDos[id];
 						setToDos(newToDos);
-						await saveToDos(newToDos);
+						await saveStorage('todo', newToDos);
 					} catch(error) {
 						console.log(error);
 					}

@@ -15,7 +15,6 @@ function UpdateToDo({ isUpdate, setIsUpdate, setText, text }: UpdateToDoProps): 
 		setText(text);
 	}
 
-
     return (
         <TouchableOpacity onPress={onPress}>
             {

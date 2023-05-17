@@ -1,15 +1,25 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { saveStorage } from '../utils/storage';
 import { theme } from '../colors';
 
 type HeaderProps = {
-    working: boolean;
-    setWorking: any;
+    currentPage: string;
+    setCurrentPage: any;
 };
 
-function Header({ working, setWorking }: HeaderProps): JSX.Element {
-    const traval = () => setWorking(false);
-	const work = () => setWorking(true);
+function Header({ currentPage, setCurrentPage }: HeaderProps): JSX.Element {
+    const traval = async () => {
+        const page = 'traval';
+        setCurrentPage(page);
+        await saveStorage('page', page);
+    };
+    
+	const work = async () => {
+        const page = 'work';
+        setCurrentPage(page);
+        await saveStorage('page', page);
+    };
 
     return (
         <View style={styles.header}>
@@ -17,7 +27,7 @@ function Header({ working, setWorking }: HeaderProps): JSX.Element {
                 <Text 
                     style={{ 
                         ...styles.btnText, 
-                        color: working ? 'white' : theme.grey 
+                        color: currentPage === 'work' ? 'white' : theme.grey 
                     }}
                 >
                     Work
@@ -28,7 +38,7 @@ function Header({ working, setWorking }: HeaderProps): JSX.Element {
                 <Text 
                     style={{ 
                         ...styles.btnText,
-                        color: !working ? 'white' : theme.grey 
+                        color: currentPage === 'traval' ? 'white' : theme.grey 
                     }}
                 >
                     Travel

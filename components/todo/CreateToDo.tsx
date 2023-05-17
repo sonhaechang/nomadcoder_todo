@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { StyleSheet, TextInput } from 'react-native';
-import { saveToDos } from '../../utils/storage';
+import { saveStorage } from '../../utils/storage';
 
 type CreateToDoProps = {
-    working: boolean;
+	currentPage: string;
     toDos: any;
     setToDos: any
 };
 
-function CreateToDo({ working, toDos, setToDos }: CreateToDoProps): JSX.Element {
+function CreateToDo({ currentPage, toDos, setToDos }: CreateToDoProps): JSX.Element {
     const [text, setText] = useState<string>('');
 
     const onChangeText = (e: any) => setText(e);
@@ -18,11 +18,11 @@ function CreateToDo({ working, toDos, setToDos }: CreateToDoProps): JSX.Element 
 			if (text !== '') {
 				const newToDos = {
 					...toDos, 
-					[Date.now()]: { text, working, finished: false }
+					[Date.now()]: { text, currentPage, finished: false }
 				}
 		
 				setToDos(newToDos);
-				await saveToDos(newToDos);
+				await saveStorage('todo', newToDos);
 				setText('');		
 			}
 		} catch(error) {
@@ -36,7 +36,11 @@ function CreateToDo({ working, toDos, setToDos }: CreateToDoProps): JSX.Element 
             onSubmitEditing={createToDo}
             returnKeyType='done'
             clearButtonMode='always'
-            placeholder={working ? 'Add a To Do' : 'where do you want to go?'}
+			placeholder={
+				currentPage === 'work' ? 
+				'Add a To Do' : 
+				'where do you want to go?'
+			}
             value={text}
             style={styles.input} 
         />

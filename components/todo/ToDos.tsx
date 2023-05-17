@@ -1,18 +1,18 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ScrollView } from 'react-native';
 import ToDo from './ToDo';
 
 type ToDosProps = {
     toDos: any;
     setToDos: any
-    working: boolean,
+    currentPage: string,
 }
 
-function ToDos({ toDos, setToDos, working }: ToDosProps): JSX.Element {
+function ToDos({ toDos, setToDos, currentPage }: ToDosProps): JSX.Element {
     return (
         <ScrollView>
             {Object.keys(toDos).sort().reverse().map(key => 
-                toDos[key].working === working ?
+                toDos[key].currentPage === currentPage ?
                 ( 
                     <ToDo 
                         key={key}

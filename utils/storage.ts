@@ -1,18 +1,24 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { STORAGE_KEY } from '@env';
+import { TODOS_STORAGE_KEY, CURRENT_PAGE_STORAGE_KEY } from '@env';
 
-export const loadToDos = async (setToDos: any) => {
+export const loadStorage = async (type: string, setStorage: any) => {
     try {
-        const s: {} | any = await AsyncStorage.getItem(STORAGE_KEY);
-        s && setToDos(JSON.parse(s));
+        const data: {} | any = await AsyncStorage.getItem(
+            type === 'todo' ? TODOS_STORAGE_KEY : CURRENT_PAGE_STORAGE_KEY
+        );
+
+        data && setStorage(JSON.parse(data));
     } catch(error) {
         console.log(error);
     }
 };
 
-export const saveToDos = async (toSave: any) => {
+export const saveStorage = async (type: string, data: any) => {
     try {
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+        await AsyncStorage.setItem(
+            type === 'todo' ? TODOS_STORAGE_KEY : CURRENT_PAGE_STORAGE_KEY, 
+            JSON.stringify(data)
+        );
     } catch(error) {
         console.log(error);
     }

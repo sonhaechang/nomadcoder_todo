@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-import { saveToDos } from '../../utils/storage';
+import { saveStorage } from '../../utils/storage';
 import { theme } from '../../colors';
 
 type ToDoContentProps = {
@@ -25,7 +25,7 @@ function ToDoContent(
                 const newToDos = { ...toDos };
                 newToDos[id].text = text;						
                 setToDos(newToDos);
-                await saveToDos(newToDos);
+                await saveStorage('todo', newToDos);
                 setIsUpdate(false);
             }
 		} catch(error) {

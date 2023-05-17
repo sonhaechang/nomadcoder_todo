@@ -3,30 +3,31 @@ import { StatusBar, StyleSheet, View } from 'react-native';
 import Header from './components/Header';
 import CreateToDo from './components/todo/CreateToDo';
 import ToDos from './components/todo/ToDos';
-import { loadToDos } from './utils/storage';
+import { loadStorage } from './utils/storage';
 import { theme } from './colors';
 
 StatusBar.setBarStyle('light-content');
 
 function App(): JSX.Element {
-	const [working, setWorking] = useState<boolean>(true);
+	const [currentPage, setCurrentPage] = useState<any>({});
 	const [toDos, setToDos] = useState<{} | any>({});
 	
 	useEffect(() => {
-		loadToDos(setToDos);
+		loadStorage('todo', setToDos);
+		loadStorage('page', setCurrentPage);
 	}, []);
 
 	return (
 		<View style={styles.container}>
-			<StatusBar  />
+			<StatusBar />
 
 			<Header 
-				working={working} 
-				setWorking={setWorking} 
+				currentPage={currentPage}
+				setCurrentPage={setCurrentPage}
 			/>
 			
 			<CreateToDo 
-				working={working} 
+				currentPage={currentPage}
 				toDos={toDos} 
 				setToDos={setToDos} 
 			/>
@@ -34,7 +35,7 @@ function App(): JSX.Element {
 			<ToDos 
 				toDos={toDos} 
 				setToDos={setToDos} 
-				working={working} 
+				currentPage={currentPage}
 			/>
 		</View>
 	);

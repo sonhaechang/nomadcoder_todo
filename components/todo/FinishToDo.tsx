@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import { saveToDos } from '../../utils/storage';
+import { saveStorage } from '../../utils/storage';
 
 type FinishToDoProps = {
     id: string;
@@ -15,7 +15,7 @@ function FinishToDo({ id, toDos, setToDos }: FinishToDoProps): JSX.Element {
 			const newToDos = { ...toDos };
 			newToDos[id].finished = !newToDos[id].finished;						
 			setToDos(newToDos);
-			await saveToDos(newToDos);
+			await saveStorage('todo', newToDos);
 		} catch(error) {
 			console.log(error);
 		}
