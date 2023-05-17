@@ -6,16 +6,18 @@ import { saveStorage } from '../../utils/storage';
 type FinishToDoProps = {
     id: string;
     toDos: any;
-    setToDos: any
+    setToDos: any;
+    setIsUpdate: any;
 };
 
-function FinishToDo({ id, toDos, setToDos }: FinishToDoProps): JSX.Element {
+function FinishToDo({ id, toDos, setToDos, setIsUpdate }: FinishToDoProps): JSX.Element {
     const finishTodo = async () => {
 		try {
 			const newToDos = { ...toDos };
 			newToDos[id].finished = !newToDos[id].finished;						
 			setToDos(newToDos);
 			await saveStorage('todo', newToDos);
+            setIsUpdate(false);
 		} catch(error) {
 			console.log(error);
 		}

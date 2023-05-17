@@ -26,6 +26,7 @@ function ToDo({ id, toDos, setToDos }: ToDoProps): JSX.Element {
 					id={id} 
 					toDos={toDos} 
 					setToDos={setToDos} 
+					setIsUpdate={setIsUpdate}
 				/>
             </View>
 
@@ -45,6 +46,7 @@ function ToDo({ id, toDos, setToDos }: ToDoProps): JSX.Element {
 					setIsUpdate={setIsUpdate}
 					setText={setText} 
 					text={toDos[id].text}
+					isFinished={toDos[id].finished}
 				/>
 				
 				<DeleteToDo 

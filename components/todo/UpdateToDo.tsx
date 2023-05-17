@@ -1,22 +1,32 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import { theme } from '../../colors';
 
 type UpdateToDoProps = {
     isUpdate: boolean;
     setIsUpdate: any;
     setText: any;
     text: string;
+    isFinished: boolean;
 };
 
-function UpdateToDo({ isUpdate, setIsUpdate, setText, text }: UpdateToDoProps): JSX.Element {
+function UpdateToDo({ 
+    isUpdate, 
+    setIsUpdate, 
+    setText, 
+    text, 
+    isFinished }: UpdateToDoProps): JSX.Element {
+        
     const onPress = () => {
 		setIsUpdate(!isUpdate);
 		setText(text);
 	}
 
     return (
-        <TouchableOpacity onPress={onPress}>
+        <TouchableOpacity 
+            onPress={onPress}
+            disabled={isFinished}>
             {
                 isUpdate ?
                 (
@@ -30,7 +40,7 @@ function UpdateToDo({ isUpdate, setIsUpdate, setText, text }: UpdateToDoProps): 
                     <IoniconsIcon 
                         name='pencil'
                         size={15} 
-                        color='white'
+                        color={isFinished ? theme.grey : 'white'}
                     />
                 )
             }

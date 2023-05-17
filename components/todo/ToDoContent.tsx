@@ -13,9 +13,14 @@ type ToDoContentProps = {
     setText: any, 
 };
 
-function ToDoContent(
-    { id, toDos, setToDos, isUpdate, setIsUpdate, text, setText }: 
-    ToDoContentProps): JSX.Element {
+function ToDoContent({ 
+    id, 
+    toDos, 
+    setToDos, 
+    isUpdate, 
+    setIsUpdate, 
+    text, 
+    setText }: ToDoContentProps): JSX.Element {
 
     const onChangeText = (e: any) => setText(e);
 
@@ -52,8 +57,8 @@ function ToDoContent(
                     <Text 
                         style={{
                             ...styles.toDoText,
-                            textDecorationLine: toDos[id].finished 
-                            ? 'line-through' : 'none',
+                            textDecorationLine: toDos[id].finished ? 'line-through' : 'none',
+                            color:  toDos[id].finished ? theme.grey : 'white'
                         }}
                     >
                         {toDos[id].text}
@@ -78,7 +83,6 @@ const styles = StyleSheet.create({
 	},
 
 	toDoText: {
-		color: 'white',
 		fontSize: 15,
 		fontWeight: '500',
 	},
